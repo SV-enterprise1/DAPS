@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="panel"><aside class="side"><span class="logo">DAPS</span>
+<a href="{{ url_for('admin.dashboard') }}" class="{{ 'on' if request.endpoint == 'admin.dashboard' }}">Vendas</a>
+<a href="{{ url_for('admin.products') }}" class="{{ 'on' if request.endpoint == 'admin.products' }}">Produtos</a>
+<a href="{{ url_for('admin.orders') }}" class="{{ 'on' if request.endpoint == 'admin.orders' }}">Pedidos</a>
+<a href="/">Ver loja</a><a href="{{ url_for('admin.logout') }}">Sair</a></aside>
+<main class="main">{% for m in get_flashed_messages() %}<div class="msg">{{ m }}</div>{% endfor %}{% block content %}{% endblock %}</main></div>
+{% endblock %}

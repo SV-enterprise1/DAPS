@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block body %}
+{% macro icon(name) %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+{%- if name == 'Usinagem' %}<circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>
+{%- elif name == 'Serras e Lâminas' %}<polygon points="12,2 14,6 18,4 17,8.5 22,9 18.5,12 22,15 17,15.5 18,20 14,18 12,22 10,18 6,20 7,15.5 2,15 5.5,12 2,9 7,8.5 6,4 10,6"/><circle cx="12" cy="12" r="2.5"/>
+{%- elif name == 'Solda' %}<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>
+{%- elif name == 'EPIs' %}<path d="M5 16a7 7 0 0 1 14 0"/><path d="M3 16h18v3H3zM12 9V5"/>
+{%- elif name == 'Abrasivos' %}<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/>
+{%- elif name == 'Ferramentas e Medição' %}<path d="M3 17L17 3l4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/>
+{%- else %}<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>
+{%- endif %}</svg>{% endmacro %}
+
+{% include "shop/_header.html" %}
+<section class="hero"><div class="wrap">
+<h1>Tudo para usinagem, solda e segurança</h1>
+<p>Ferramentas de corte, serras, consumíveis de solda e EPIs para a sua indústria.</p>
+<form class="search" method="get"><input name="q" value="{{ q }}" placeholder="Buscar produtos" aria-label="Buscar produtos">
+{% if cat %}<input type="hidden" name="cat" value="{{ cat }}">{% endif %}<button class="btn">Buscar</button></form>
+</div></section>
+<main class="wrap">
+<div class="chips"><a class="chip {{ 'on' if not cat }}" href="/">Todos</a>
+{% for c in categories %}<a class="chip {{ 'on' if cat == c.id }}" href="/?cat={{ c.id }}">{{ c.name }}</a>{% endfor %}</div>
+<div class="grid">
+{% for p in products %}
+<article class="card" data-id="{{ p.id }}" data-name="{{ p.name }}" data-cat="{{ p.category.name }}" data-desc="{{ p.description or '' }}" data-price="{{ p.price|brl }}" data-stock="{{ p.stock }}">
+<button class="thumb" type="button" aria-label="Ver detalhes de {{ p.name }}">{% if p.image_url %}<img src="{{ p.image_url }}" alt="">{% else %}{{ icon(p.category.name) }}{% endif %}</button>
+<div class="b"><span class="cat">{{ p.category.name }}</span><h3>{{ p.name }}</h3><div class="price">{{ p.price|brl }}</div>
+{% if p.stock > 0 %}<button class="btn add" type="button" data-add="{{ p.id }}">Adicionar</button>{% else %}<span class="tag off">Indisponível</span>{% endif %}</div></article>
+{% else %}<p class="empty">Nenhum produto encontrado. Tente outra busca ou categoria.</p>{% endfor %}
+</div></main>
+
+<dialog id="pop" aria-labelledby="pop-name">
+<div class="vis" id="pop-vis"></div>
+<div class="pop-b"><span class="cat" id="pop-cat"></span><h2 id="pop-name"></h2><p id="pop-desc"></p>
+<div class="pop-row"><b class="price" id="pop-price"></b><span class="tag" id="pop-stock"></span></div>
+<div class="pop-actions"><button class="btn" id="pop-add" type="button">Adicionar ao carrinho</button><button class="btn ghost" id="pop-close" type="button">Fechar</button></div></div>
+</dialog>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='shop.js') }}"></script>
+{% endblock %}

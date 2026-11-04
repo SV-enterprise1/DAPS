@@ -1,0 +1,16 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<h1>Pedidos</h1>
+<div class="box" style="overflow-x:auto"><table>
+<tr><th>#</th><th>Cliente</th><th>Contato</th><th>Pagamento</th><th>Total</th><th>Status</th><th></th></tr>
+{% for o in orders %}<tr>
+<td>{{ o.id }}</td><td>{{ o.customer_name }}<br><small>{{ o.created_at.strftime('%d/%m/%Y %H:%M') }}</small></td>
+<td>{{ o.customer_phone }}<br><small>{{ o.customer_email }}</small></td>
+<td>{{ o.payment_method or '—' }}</td><td>{{ o.total|brl }}</td>
+<td><span class="tag {{ 'off' if o.status == 'cancelado' }}">{{ o.status }}</span></td>
+<td><form method="post" action="{{ url_for('admin.order_status', oid=o.id) }}" style="display:flex;gap:6px">
+<select name="status" aria-label="Status do pedido {{ o.id }}">{% for s in ['pendente','pago','cancelado'] %}<option {{ 'selected' if s == o.status }}>{{ s }}</option>{% endfor %}</select>
+<button class="btn ghost">Salvar</button></form></td></tr>
+{% else %}<tr><td colspan="7">Nenhum pedido ainda.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

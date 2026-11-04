@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Carrinho · DAPS{% endblock %}
+{% block body %}
+{% include "shop/_header.html" %}
+<main class="wrap page">
+<h1>Seu carrinho</h1>
+{% for m in get_flashed_messages() %}<div class="msg">{{ m }}</div>{% endfor %}
+{% if lines %}
+<div class="cart-layout">
+<div class="box lines">
+{% for l in lines %}
+<div class="line"><div class="line-info"><span class="cat">{{ l.p.category.name }}</span><b>{{ l.p.name }}</b><span>{{ l.p.price|brl }} cada</span></div>
+<form class="qty" method="post" action="{{ url_for('shop.cart_update') }}">
+<input type="hidden" name="pid" value="{{ l.p.id }}">
+<label class="sr">Quantidade de {{ l.p.name }}<input name="qty" type="number" min="0" max="{{ l.p.stock }}" value="{{ l.qty }}" inputmode="numeric"></label>
+<button class="btn ghost">Atualizar</button></form>
+<div class="line-sub">{{ l.sub|brl }}
+<form method="post" action="{{ url_for('shop.cart_update') }}"><input type="hidden" name="pid" value="{{ l.p.id }}"><input type="hidden" name="qty" value="0"><button class="link" aria-label="Remover {{ l.p.name }}">Remover</button></form></div></div>
+{% endfor %}</div>
+<aside class="box summary"><h3>Resumo</h3>
+<div class="sum-row"><span>Subtotal</span><b>{{ total|brl }}</b></div>
+<p class="mute">Frete e prazo combinados após o pedido.</p>
+<a class="btn block" href="{{ url_for('shop.checkout') }}">Finalizar compra</a>
+<a class="link" href="/">Continuar comprando</a></aside>
+</div>
+{% else %}<p class="empty">Seu carrinho está vazio. <a class="link" href="/">Ver produtos</a></p>{% endif %}
+</main>
+{% endblock %}

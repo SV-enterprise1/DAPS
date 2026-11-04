@@ -1,0 +1,17 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<h1>Vendas</h1>
+<div class="kpis">
+<div class="box kpi">Faturamento<b>{{ kpis.revenue|brl }}</b></div>
+<div class="box kpi">Pedidos pagos<b>{{ kpis.orders }}</b></div>
+<div class="box kpi">Aguardando pagamento<b>{{ kpis.pending }}</b></div>
+<div class="box kpi">Produtos ativos<b>{{ kpis.products }}</b></div></div>
+<div class="charts">
+<div class="box"><h3>Faturamento nos últimos 30 dias</h3><canvas id="daily"></canvas></div>
+<div class="box"><h3>Mais vendidos</h3><canvas id="top"></canvas></div></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+new Chart(document.getElementById('daily'),{type:'line',data:{labels:{{ days|tojson }},datasets:[{label:'R$',data:{{ totals|tojson }},borderColor:'#1B4DDB',backgroundColor:'#E8EFFD',fill:true,tension:.3}]},options:{plugins:{legend:{display:false}}}});
+new Chart(document.getElementById('top'),{type:'bar',data:{labels:{{ top_names|tojson }},datasets:[{label:'Unidades',data:{{ top_qty|tojson }},backgroundColor:'#1B4DDB'}]},options:{indexAxis:'y',plugins:{legend:{display:false}}}});
+</script>
+{% endblock %}

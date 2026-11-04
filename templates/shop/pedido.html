@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Pedido #{{ o.id }} · DAPS{% endblock %}
+{% block body %}
+{% include "shop/_header.html" %}
+<main class="wrap page narrow">
+<h1>Pedido #{{ o.id }} recebido</h1>
+<p class="mute">Obrigado, {{ o.customer_name }}! Pagamento: <b>{{ metodos[o.payment_method] }}</b> · Total <b>{{ o.total|brl }}</b></p>
+<section class="box">
+{% if o.payment_method == 'pix' %}
+  {% if pix_code is defined %}
+  <h3>Pague com Pix</h3>
+  {% if pix_qr %}<div class="qr">{{ pix_qr|safe }}</div>{% endif %}
+  <label>Pix copia e cola<textarea id="pix" readonly rows="4">{{ pix_code }}</textarea></label>
+  <button class="btn" type="button" onclick="navigator.clipboard.writeText(document.getElementById('pix').value).then(()=>this.textContent='Copiado!')">Copiar código</button>
+  {% else %}<p>Nossa equipe vai enviar a chave Pix para o seu contato em instantes.</p>{% endif %}
+{% elif o.payment_method == 'whatsapp' %}
+  <h3>Combine pelo WhatsApp</h3>
+  {% if wa_link is defined %}<a class="btn" href="{{ wa_link }}" target="_blank" rel="noopener">Abrir conversa no WhatsApp</a>
+  {% else %}<p>Nossa equipe vai falar com você pelo telefone informado.</p>{% endif %}
+{% elif o.payment_method == 'cartao' %}
+  <h3>Cartão de crédito</h3><p>Enviaremos um link seguro de pagamento para {{ o.customer_email }}. Nunca pedimos dados do cartão por aqui.</p>
+{% else %}
+  <h3>Boleto</h3><p>Enviaremos o boleto para {{ o.customer_email }}. O pedido é liberado após a compensação.</p>
+{% endif %}
+</section>
+<section class="box"><h3>Itens</h3>
+{% for i in o.items %}<div class="sum-row"><span>{{ i.quantity }}× {{ i.product.name }}</span><b>{{ (i.unit_price * i.quantity)|brl }}</b></div>{% endfor %}
+<p class="mute">Entrega em: {{ o.address }}</p></section>
+<a class="link" href="/">Voltar à loja</a>
+</main>
+{% endblock %}
