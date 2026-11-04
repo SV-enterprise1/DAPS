@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Carrinho · DAPS{% endblock %}
+{% block title %}Carrinho · DEPIS{% endblock %}
 {% block body %}
 {% include "shop/_header.html" %}
 <main class="wrap page">
@@ -10,12 +10,12 @@
 <div class="box lines">
 {% for l in lines %}
 <div class="line"><div class="line-info"><span class="cat">{{ l.p.category.name }}</span><b>{{ l.p.name }}</b><span>{{ l.p.price|brl }} cada</span></div>
-<form class="qty" method="post" action="{{ url_for('shop.cart_update') }}">
+<form class="qty" method="post" action="{{ url_for('shop.cart_update') }}"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
 <input type="hidden" name="pid" value="{{ l.p.id }}">
 <label class="sr">Quantidade de {{ l.p.name }}<input name="qty" type="number" min="0" max="{{ l.p.stock }}" value="{{ l.qty }}" inputmode="numeric"></label>
 <button class="btn ghost">Atualizar</button></form>
 <div class="line-sub">{{ l.sub|brl }}
-<form method="post" action="{{ url_for('shop.cart_update') }}"><input type="hidden" name="pid" value="{{ l.p.id }}"><input type="hidden" name="qty" value="0"><button class="link" aria-label="Remover {{ l.p.name }}">Remover</button></form></div></div>
+<form method="post" action="{{ url_for('shop.cart_update') }}"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><input type="hidden" name="pid" value="{{ l.p.id }}"><input type="hidden" name="qty" value="0"><button class="link" aria-label="Remover {{ l.p.name }}">Remover</button></form></div></div>
 {% endfor %}</div>
 <aside class="box summary"><h3>Resumo</h3>
 <div class="sum-row"><span>Subtotal</span><b>{{ total|brl }}</b></div>

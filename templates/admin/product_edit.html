@@ -1,0 +1,13 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<h1>Editar produto</h1>
+<form class="f box" method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+<label>Nome<input name="name" value="{{ p.name }}" required maxlength="160"></label>
+<label>Categoria<select name="category_id" required>{% for c in categories %}<option value="{{ c.id }}" {{ 'selected' if c.id == p.category_id }}>{{ c.name }}</option>{% endfor %}</select></label>
+<label>Preço (R$)<input name="price" inputmode="decimal" value="{{ '%.2f'|format(p.price)|replace('.', ',') }}" required></label>
+<label>Estoque<input name="stock" type="number" min="0" value="{{ p.stock }}" required></label>
+<label>URL da imagem<input name="image_url" type="url" value="{{ p.image_url or '' }}"></label>
+<label>Descrição<input name="description" value="{{ p.description or '' }}"></label>
+<label><span><input type="checkbox" name="active" {{ 'checked' if p.active }}> Produto ativo na loja</span></label>
+<div><button class="btn">Salvar alterações</button> <a class="btn ghost" href="{{ url_for('admin.products') }}">Cancelar</a></div></form>
+{% endblock %}

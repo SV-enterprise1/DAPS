@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block title %}Entrar · DAPS{% endblock %}
+{% block title %}Entrar · DEPIS{% endblock %}
 {% block body %}
-<form class="login box" method="post"><span class="logo">DAPS</span><h2>Entrar no painel</h2>
+<form class="login box" method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><span class="logo">DEPIS</span><h2>Entrar no painel</h2>
 {% for m in get_flashed_messages() %}<div class="msg">{{ m }}</div>{% endfor %}
 <label>E-mail<input type="email" name="email" required></label>
 <label>Senha<input type="password" name="password" required></label>

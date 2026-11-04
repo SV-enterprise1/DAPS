@@ -1,4 +1,4 @@
-# Catálogo de exemplo da DAPS. Edite aqui e rode `flask --app app init-db` em um banco novo.
+# Catálogo de exemplo da DEPIS. Edite aqui e rode `flask --app app init-db` em um banco novo.
 CATEGORIAS = ["Usinagem", "Serras e Lâminas", "Solda", "EPIs", "Abrasivos", "Ferramentas e Medição"]
 
 # (nome, preço, índice da categoria em CATEGORIAS)

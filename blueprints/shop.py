@@ -121,10 +121,10 @@ def pedido(oid):
     cfg = current_app.config
     ctx = {}
     if o.payment_method == "pix" and cfg["PIX_KEY"]:
-        code = pix_payload(cfg["PIX_KEY"], cfg["PIX_NAME"], cfg["PIX_CITY"], o.total, f"DAPS{o.id}")
+        code = pix_payload(cfg["PIX_KEY"], cfg["PIX_NAME"], cfg["PIX_CITY"], o.total, f"DEPIS{o.id}")
         ctx.update(pix_code=code, pix_qr=pix_qr_svg(code))
     if o.payment_method == "whatsapp" and cfg["WHATSAPP_NUMBER"]:
         itens = "\n".join(f"- {i.quantity}x {i.product.name}" for i in o.items)
-        msg = f"Olá! Fiz o pedido #{o.id} na DAPS.\n{itens}\nTotal: {fmt_brl(o.total)}\nNome: {o.customer_name}"
+        msg = f"Olá! Fiz o pedido #{o.id} na DEPIS.\n{itens}\nTotal: {fmt_brl(o.total)}\nNome: {o.customer_name}"
         ctx["wa_link"] = f"https://wa.me/{cfg['WHATSAPP_NUMBER']}?text={quote(msg)}"
     return render_template("shop/pedido.html", o=o, metodos=METODOS, **ctx)

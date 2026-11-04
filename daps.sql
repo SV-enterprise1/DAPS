@@ -1,4 +1,4 @@
--- DAPS Marketplace · esquema e dados de exemplo (MySQL 8+)
+-- DEPIS Marketplace · esquema e dados de exemplo (MySQL 8+)
 -- Importar: mysql -u usuario -p < daps.sql
 CREATE DATABASE IF NOT EXISTS daps CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE daps;

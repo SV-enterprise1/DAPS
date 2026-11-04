@@ -1,4 +1,4 @@
-# DAPS Marketplace (Flask + MySQL)
+# DEPIS Marketplace (Flask + MySQL)
 
 1. Crie o banco no MySQL: `CREATE DATABASE daps CHARACTER SET utf8mb4;`
 2. `python -m venv venv && source venv/bin/activate` (Windows: `venv\Scripts\activate`)
@@ -13,3 +13,6 @@ Estrutura: `models.py` (tabelas) · `blueprints/shop.py` (loja) · `blueprints/a
 
 Trocar o catálogo de exemplo (apaga produtos, categorias e pedidos; mantém o admin):
 `flask --app app trocar-catalogo` — os produtos ficam em `seed_data.py`.
+
+Render: comando de início `gunicorn app:app`. Variáveis: SECRET_KEY (forte), DATABASE_URL, PIX_KEY, PIX_NAME, PIX_CITY, WHATSAPP_NUMBER.
+Troque a senha do admin: `flask --app app trocar-senha-admin`.

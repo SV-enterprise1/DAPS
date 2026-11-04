@@ -1,3 +1,4 @@
+import os
 import random
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -7,6 +8,7 @@ from flask import Flask
 
 from config import Config
 from models import Category, Order, OrderItem, Product, User, db
+from security import init_security
 from seed_data import CATEGORIAS, PRODUTOS
 
 
@@ -33,13 +35,19 @@ def carregar_catalogo_exemplo():
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    if os.getenv("RENDER"):  # atrás do proxy do Render: IP real do visitante e HTTPS corretos
+        from werkzeug.middleware.proxy_fix import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
     db.init_app(app)
+    init_security(app)
 
+    from blueprints.account import account
     from blueprints.admin import admin
     from blueprints.shop import shop
 
     app.register_blueprint(shop)
     app.register_blueprint(admin, url_prefix="/admin")
+    app.register_blueprint(account)
 
     @app.template_filter("brl")
     def brl(value):
@@ -51,7 +59,7 @@ def create_app():
         db.create_all()
         if User.query.first():
             return click.echo("Banco já inicializado.")
-        admin_user = User(name="Admin DAPS", email="admin@daps.com", is_admin=True)
+        admin_user = User(name="Admin DEPIS", email="admin@daps.com", is_admin=True)
         admin_user.set_password("admin123")
         db.session.add(admin_user)
         carregar_catalogo_exemplo()
@@ -68,6 +76,20 @@ def create_app():
         db.session.commit()
         carregar_catalogo_exemplo()
         click.echo("Catálogo trocado.")
+
+    @app.cli.command("trocar-senha-admin")
+    @click.option("--email", default="admin@daps.com", show_default=True)
+    @click.password_option(prompt="Nova senha")
+    def trocar_senha_admin(email, password):
+        """Define uma nova senha para o administrador (mínimo de 12 caracteres)."""
+        user = User.query.filter_by(email=email, is_admin=True).first()
+        if not user:
+            return click.echo("Administrador não encontrado.")
+        if len(password) < 12:
+            return click.echo("Use pelo menos 12 caracteres.")
+        user.set_password(password)
+        db.session.commit()
+        click.echo("Senha atualizada.")
 
     return app
 

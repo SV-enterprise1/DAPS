@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Minha conta · DEPIS{% endblock %}
+{% block body %}
+{% include "shop/_header.html" %}
+<section class="login box auth"><h2>Olá, {{ cliente.name }}</h2><p class="cat">{{ cliente.email }}</p>
+<form method="post" action="{{ url_for('account.sair') }}"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><button class="btn ghost">Sair</button></form></section>
+{% endblock %}

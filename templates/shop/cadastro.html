@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Criar conta · DEPIS{% endblock %}
+{% block body %}
+{% include "shop/_header.html" %}
+<form class="login box auth" method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><h2>Criar conta</h2>
+{% for m in get_flashed_messages() %}<div class="msg">{{ m }}</div>{% endfor %}
+<label>Nome completo<input name="nome" required maxlength="120" autocomplete="name"></label>
+<label>E-mail<input type="email" name="email" required maxlength="120" autocomplete="email"></label>
+<label>Senha (mínimo 8 caracteres)<input type="password" name="senha" required minlength="8" maxlength="128" autocomplete="new-password"></label>
+<label>Repita a senha<input type="password" name="senha2" required minlength="8" maxlength="128" autocomplete="new-password"></label>
+<button class="btn">Criar conta</button>
+<p class="cat">Já tem conta? <a class="link" href="{{ url_for('account.entrar') }}">Entrar</a></p></form>
+{% endblock %}

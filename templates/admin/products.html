@@ -1,7 +1,7 @@
 {% extends "admin/layout.html" %}
 {% block content %}
 <h1>Produtos</h1>
-<form class="f box" method="post">
+<form class="f box" method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
 <label>Nome<input name="name" required></label>
 <label>Categoria<select name="category_id" required>{% for c in categories %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select></label>
 <label>Preço (R$)<input name="price" inputmode="decimal" required></label>
@@ -13,6 +13,6 @@
 <tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Status</th><th></th></tr>
 {% for p in products %}<tr><td>{{ p.name }}</td><td>{{ p.category.name }}</td><td>{{ p.price|brl }}</td><td>{{ p.stock }}</td>
 <td><span class="tag {{ '' if p.active else 'off' }}">{{ 'Ativo' if p.active else 'Inativo' }}</span></td>
-<td><form method="post" action="{{ url_for('admin.toggle', pid=p.id) }}"><button class="btn ghost">{{ 'Desativar' if p.active else 'Ativar' }}</button></form></td></tr>
+<td class="acts"><a class="btn ghost" href="{{ url_for('admin.edit_product', pid=p.id) }}">Editar</a> <form method="post" style="display:inline" action="{{ url_for('admin.toggle', pid=p.id) }}"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><button class="btn ghost">{{ 'Desativar' if p.active else 'Ativar' }}</button></form></td></tr>
 {% endfor %}</table></div>
 {% endblock %}

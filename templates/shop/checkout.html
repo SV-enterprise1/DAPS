@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Finalizar compra · DAPS{% endblock %}
+{% block title %}Finalizar compra · DEPIS{% endblock %}
 {% block body %}
 {% include "shop/_header.html" %}
 <main class="wrap page">
 <h1>Finalizar compra</h1>
 {% for m in get_flashed_messages() %}<div class="msg">{{ m }}</div>{% endfor %}
-<form method="post" class="cart-layout">
+<form method="post" class="cart-layout"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
 <div class="stack">
 <section class="box"><h3>Seus dados</h3><div class="fields">
 <label>Nome completo<input name="name" value="{{ f.get('name','') }}" autocomplete="name" required></label>
@@ -14,7 +14,7 @@
 <label class="wide">Endereço de entrega<input name="address" value="{{ f.get('address','') }}" autocomplete="street-address" placeholder="Rua, número, bairro, cidade, CEP" required></label>
 </div></section>
 <section class="box"><h3>Forma de pagamento</h3><div class="pay">
-{% set dica = {'pix':'Aprovação na hora, com QR Code e copia e cola','cartao':'Link seguro de pagamento enviado pela DAPS','boleto':'Boleto enviado por e-mail e WhatsApp','whatsapp':'Combine o pagamento direto com a equipe'} %}
+{% set dica = {'pix':'Aprovação na hora, com QR Code e copia e cola','cartao':'Link seguro de pagamento enviado pela DEPIS','boleto':'Boleto enviado por e-mail e WhatsApp','whatsapp':'Combine o pagamento direto com a equipe'} %}
 {% for k, nome in metodos.items() %}
 <label class="opt"><input type="radio" name="payment" value="{{ k }}" {{ 'checked' if f.get('payment') == k }} required><span><b>{{ nome }}</b><small>{{ dica[k] }}</small></span></label>
 {% endfor %}</div></section>

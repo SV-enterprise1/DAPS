@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
-<div class="panel"><aside class="side"><span class="logo">DAPS</span>
+<div class="panel"><aside class="side"><span class="logo">DEPIS</span>
 <a href="{{ url_for('admin.dashboard') }}" class="{{ 'on' if request.endpoint == 'admin.dashboard' }}">Vendas</a>
 <a href="{{ url_for('admin.products') }}" class="{{ 'on' if request.endpoint == 'admin.products' }}">Produtos</a>
 <a href="{{ url_for('admin.orders') }}" class="{{ 'on' if request.endpoint == 'admin.orders' }}">Pedidos</a>

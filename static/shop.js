@@ -8,7 +8,7 @@
     clearTimeout(timer); timer = setTimeout(() => toast.classList.remove('on'), 2600);
   }
   async function add(pid) {
-    const fd = new FormData(); fd.append('pid', pid); fd.append('qty', 1);
+    const fd = new FormData(); fd.append('pid', pid); fd.append('qty', 1); fd.append('_csrf', document.querySelector('meta[name=csrf]').content);
     try {
       const r = await fetch('/carrinho/add', { method: 'POST', body: fd });
       const d = await r.json();

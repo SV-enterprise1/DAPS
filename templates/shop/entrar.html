@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Entrar · DEPIS{% endblock %}
+{% block body %}
+{% include "shop/_header.html" %}
+<form class="login box auth" method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><h2>Entrar</h2>
+{% for m in get_flashed_messages() %}<div class="msg">{{ m }}</div>{% endfor %}
+<label>E-mail<input type="email" name="email" required autocomplete="email"></label>
+<label>Senha<input type="password" name="senha" required autocomplete="current-password"></label>
+<button class="btn">Entrar</button>
+<p class="cat">Primeira vez aqui? <a class="link" href="{{ url_for('account.cadastro') }}">Criar conta</a></p></form>
+{% endblock %}
