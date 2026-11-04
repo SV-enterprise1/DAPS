@@ -1,11 +1,17 @@
 import os
 
+_db = os.getenv(
+    "DATABASE_URL", "mysql+pymysql://root:senha@localhost:3306/daps?charset=utf8mb4"
+)
+if _db.startswith("postgres://"):
+    _db = _db.replace("postgres://", "postgresql+psycopg2://", 1)
+elif _db.startswith("postgresql://"):
+    _db = _db.replace("postgresql://", "postgresql+psycopg2://", 1)
+
 
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-troque-esta-chave")
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL", "mysql+pymysql://root:senha@localhost:3306/daps?charset=utf8mb4"
-    )
+    SQLALCHEMY_DATABASE_URI = _db
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SESSION_COOKIE_SAMESITE = "Lax"
     SESSION_COOKIE_HTTPONLY = True
