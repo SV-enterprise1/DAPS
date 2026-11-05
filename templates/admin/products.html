@@ -3,16 +3,22 @@
 <h1>Produtos</h1>
 <form class="f box" method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
 <label>Nome<input name="name" required></label>
-<label>Categoria<select name="category_id" required>{% for c in categories %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select></label>
+<label>Categoria <a href="{{ url_for('admin.categories') }}" style="font-weight:400">+ nova</a><select name="category_id" required>{% for c in categories %}<option value="{{ c.id }}" {{ 'selected' if cat == c.id }}>{{ c.name }}</option>{% endfor %}</select></label>
 <label>Preço (R$)<input name="price" inputmode="decimal" required></label>
 <label>Estoque<input name="stock" type="number" min="0" value="0" required></label>
 <label>URL da imagem<input name="image_url" type="url"></label>
 <label>Descrição<input name="description"></label>
 <button class="btn">Cadastrar produto</button></form>
+<div class="chips" style="margin:20px 0 12px"><a class="chip {{ 'on' if not cat }}" href="{{ url_for('admin.products', q=q or None) }}">Todas ({{ total }})</a>
+{% for c in categories %}<a class="chip {{ 'on' if cat == c.id }}" href="{{ url_for('admin.products', cat=c.id, q=q or None) }}">{{ c.name }} ({{ contagem.get(c.id, 0) }})</a>{% endfor %}</div>
+<form method="get" style="display:flex;gap:8px;margin-bottom:12px">{% if cat %}<input type="hidden" name="cat" value="{{ cat }}">{% endif %}
+<input name="q" value="{{ q }}" placeholder="Buscar produto pelo nome" aria-label="Buscar produto" style="flex:1"><button class="btn ghost">Buscar</button>
+{% if q %}<a class="btn ghost" href="{{ url_for('admin.products', cat=cat) }}">Limpar</a>{% endif %}</form>
 <div class="box" style="overflow-x:auto"><table>
 <tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Status</th><th></th></tr>
 {% for p in products %}<tr><td>{{ p.name }}</td><td>{{ p.category.name }}</td><td>{{ p.price|brl }}</td><td>{{ p.stock }}</td>
 <td><span class="tag {{ '' if p.active else 'off' }}">{{ 'Ativo' if p.active else 'Inativo' }}</span></td>
 <td class="acts"><a class="btn ghost" href="{{ url_for('admin.edit_product', pid=p.id) }}">Editar</a> <form method="post" style="display:inline" action="{{ url_for('admin.toggle', pid=p.id) }}"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><button class="btn ghost">{{ 'Desativar' if p.active else 'Ativar' }}</button></form></td></tr>
+{% else %}<tr><td colspan="6" style="color:var(--mute)">Nenhum produto encontrado neste filtro.</td></tr>
 {% endfor %}</table></div>
 {% endblock %}

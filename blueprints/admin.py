@@ -105,10 +105,67 @@ def products():
             db.session.add(Product(**dados))
             db.session.commit()
             flash("Produto cadastrado.")
-            return redirect(url_for("admin.products"))
-    return render_template("admin/products.html",
-                           products=Product.query.order_by(Product.id.desc()).all(),
-                           categories=Category.query.order_by(Category.name).all())
+            return redirect(url_for("admin.products", cat=dados["category_id"]))
+    cat = request.args.get("cat", type=int)
+    q = request.args.get("q", "").strip()
+    query = Product.query
+    if cat:
+        query = query.filter_by(category_id=cat)
+    if q:
+        query = query.filter(Product.name.ilike(f"%{q}%"))
+    contagem = dict(db.session.query(Product.category_id, func.count(Product.id)).group_by(Product.category_id).all())
+    return render_template("admin/products.html", products=query.order_by(Product.id.desc()).all(),
+                           categories=Category.query.order_by(Category.name).all(),
+                           cat=cat, q=q, contagem=contagem, total=sum(contagem.values()))
+
+
+@admin.route("/categories", methods=["GET", "POST"])
+@login_required
+def categories():
+    if request.method == "POST":
+        nome = " ".join(request.form.get("name", "").split())
+        if not nome or len(nome) > 80:
+            flash("Informe o nome da categoria (até 80 caracteres).")
+        elif Category.query.filter(func.lower(Category.name) == nome.lower()).first():
+            flash("Já existe uma categoria com esse nome.")
+        else:
+            db.session.add(Category(name=nome))
+            db.session.commit()
+            flash(f"Categoria \u201c{nome}\u201d criada.")
+        return redirect(url_for("admin.categories"))
+    contagem = dict(db.session.query(Product.category_id, func.count(Product.id)).group_by(Product.category_id).all())
+    return render_template("admin/categories.html", categories=Category.query.order_by(Category.name).all(),
+                           contagem=contagem)
+
+
+@admin.route("/categories/<int:cid>/rename", methods=["POST"])
+@login_required
+def rename_category(cid):
+    c = db.get_or_404(Category, cid)
+    nome = " ".join(request.form.get("name", "").split())
+    outra = Category.query.filter(func.lower(Category.name) == nome.lower(), Category.id != cid).first()
+    if not nome or len(nome) > 80:
+        flash("Informe o nome da categoria (até 80 caracteres).")
+    elif outra:
+        flash("Já existe uma categoria com esse nome.")
+    else:
+        c.name = nome
+        db.session.commit()
+        flash("Categoria renomeada.")
+    return redirect(url_for("admin.categories"))
+
+
+@admin.route("/categories/<int:cid>/delete", methods=["POST"])
+@login_required
+def delete_category(cid):
+    c = db.get_or_404(Category, cid)
+    if Product.query.filter_by(category_id=cid).count():
+        flash("Essa categoria ainda tem produtos. Mova ou remova os produtos antes de excluir.")
+    else:
+        db.session.delete(c)
+        db.session.commit()
+        flash("Categoria excluída.")
+    return redirect(url_for("admin.categories"))
 
 
 @admin.route("/products/<int:pid>/edit", methods=["GET", "POST"])

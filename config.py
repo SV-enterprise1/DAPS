@@ -13,7 +13,14 @@ def _db_url():
     return url
 
 
+def _admin_path():
+    """Endereço secreto do painel. Defina ADMIN_PATH (ex.: /painel-k7x92qf) para que ninguém adivinhe a URL."""
+    p = "/" + os.getenv("ADMIN_PATH", "/admin").strip().strip("/")
+    return p if p != "/" else "/admin"
+
+
 class Config:
+    ADMIN_PATH = _admin_path()
     SECRET_KEY = _SEGREDO
     SQLALCHEMY_DATABASE_URI = _db_url()
     SQLALCHEMY_TRACK_MODIFICATIONS = False

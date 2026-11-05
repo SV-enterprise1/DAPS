@@ -46,7 +46,7 @@ def create_app():
     from blueprints.shop import shop
 
     app.register_blueprint(shop)
-    app.register_blueprint(admin, url_prefix="/admin")
+    app.register_blueprint(admin, url_prefix=app.config["ADMIN_PATH"])
     app.register_blueprint(account)
 
     @app.template_filter("brl")

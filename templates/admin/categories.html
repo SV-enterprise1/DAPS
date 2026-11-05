@@ -1,0 +1,15 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<h1>Categorias</h1>
+<form class="f box" method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+<label>Nova categoria<input name="name" required maxlength="80" placeholder="Ex.: Lubrificantes"></label>
+<button class="btn">Adicionar categoria</button></form>
+<div class="box" style="overflow-x:auto"><table>
+<tr><th>Categoria</th><th>Produtos</th><th></th></tr>
+{% for c in categories %}<tr>
+<td><form method="post" action="{{ url_for('admin.rename_category', cid=c.id) }}" style="display:flex;gap:8px"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+<input name="name" value="{{ c.name }}" required maxlength="80" aria-label="Nome da categoria"><button class="btn ghost">Renomear</button></form></td>
+<td><a href="{{ url_for('admin.products', cat=c.id) }}">{{ contagem.get(c.id, 0) }} produto(s)</a></td>
+<td class="acts">{% if contagem.get(c.id, 0) == 0 %}<form method="post" style="display:inline" action="{{ url_for('admin.delete_category', cid=c.id) }}" onsubmit="return confirm('Excluir a categoria {{ c.name|e }}?')"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><button class="btn ghost">Excluir</button></form>{% else %}<span class="tag off">Em uso</span>{% endif %}</td></tr>
+{% else %}<tr><td colspan="3">Nenhuma categoria ainda.</td></tr>{% endfor %}</table></div>
+{% endblock %}
